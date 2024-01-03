@@ -200,9 +200,12 @@ export default class DatePicker extends Component {
 
   render() {
     const { isOpen } = this.state;
-
+    const { attachment, targetAttachment } = this.props;
     return (
-      <TetherComponent attachment="top center">
+      <TetherComponent
+        attachment={attachment ? attachment : "top center"}
+        targetAttachment={targetAttachment ? targetAttachment : "bottom center"}
+      >
         {this.renderInput()}
         {isOpen ? this.renderCalendar() : null}
       </TetherComponent>
