@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment-jalali';
-import TetherComponent from 'react-tether';
-import Calendar from './Calendar';
-import classnames from 'classnames';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import moment from "moment-jalali";
+import TetherComponent from "react-tether";
+import Calendar from "./Calendar";
+import classnames from "classnames";
 
-export const outsideClickIgnoreClass = 'ignore--click--outside';
+export const outsideClickIgnoreClass = "ignore--click--outside";
 
 export default class DatePicker extends Component {
   static propTypes = {
@@ -22,20 +22,21 @@ export default class DatePicker extends Component {
     removable: PropTypes.bool,
     timePickerComponent: PropTypes.func,
     calendarStyles: PropTypes.object,
-    calendarContainerProps: PropTypes.object
+    calendarContainerProps: PropTypes.object,
   };
 
   static defaultProps = {
-    inputFormat: 'jYYYY/jM/jD',
-    calendarStyles: require('../styles/basic.css'),
-    calendarContainerProps: {}
+    inputFormat: "jYYYY/jM/jD",
+    calendarStyles: require("../styles/basic.css"),
+    calendarContainerProps: {},
   };
 
   state = {
     isOpen: false,
     momentValue: this.props.defaultValue || null,
-    inputValue: this.props.defaultValue ?
-      this.props.defaultValue.format(this.props.inputFormat) : ''
+    inputValue: this.props.defaultValue
+      ? this.props.defaultValue.format(this.props.inputFormat)
+      : "",
   };
 
   setOpen(isOpen) {
@@ -43,7 +44,7 @@ export default class DatePicker extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if ('value' in nextProps && nextProps.value !== this.props.value) {
+    if ("value" in nextProps && nextProps.value !== this.props.value) {
       this.setMomentValue(nextProps.value);
     }
   }
@@ -56,13 +57,14 @@ export default class DatePicker extends Component {
     }
 
     let inputValue = "";
-    if (momentValue)
-      inputValue = momentValue.format(inputFormat);
+    if (momentValue) inputValue = momentValue.format(inputFormat);
     this.setState({ momentValue, inputValue });
   }
 
   handleFocus() {
     this.setOpen(true);
+    const { onFocus } = this.props;
+    if (onFocus) onFocus();
   }
 
   handleBlur(event) {
@@ -90,12 +92,11 @@ export default class DatePicker extends Component {
     let momentValue = selectedDay.clone();
 
     if (oldValue) {
-      momentValue = momentValue
-        .set({
-          hour: oldValue.hours(),
-          minute: oldValue.minutes(),
-          second: oldValue.seconds()
-        });
+      momentValue = momentValue.set({
+        hour: oldValue.hours(),
+        minute: oldValue.minutes(),
+        second: oldValue.seconds(),
+      });
     }
 
     this.setMomentValue(momentValue);
@@ -115,7 +116,7 @@ export default class DatePicker extends Component {
 
   handleInputClick() {
     if (!this.props.disabled) {
-      this.setOpen(true)
+      this.setOpen(true);
     }
   }
 
@@ -129,7 +130,7 @@ export default class DatePicker extends Component {
     }
 
     const className = classnames(this.props.className, {
-      [outsideClickIgnoreClass]: isOpen
+      [outsideClickIgnoreClass]: isOpen,
     });
 
     return (
@@ -138,10 +139,10 @@ export default class DatePicker extends Component {
           className={className}
           type="text"
           ref="input"
-          onFocus={this.handleFocus.bind(this) }
-          onBlur={this.handleBlur.bind(this) }
-          onChange={this.handleInputChange.bind(this) }
-          onClick={this.handleInputClick.bind(this) }
+          onFocus={this.handleFocus.bind(this)}
+          onBlur={this.handleBlur.bind(this)}
+          onChange={this.handleInputChange.bind(this)}
+          onClick={this.handleInputClick.bind(this)}
           value={inputValue}
         />
       </div>
@@ -150,7 +151,15 @@ export default class DatePicker extends Component {
 
   renderCalendar() {
     const { momentValue } = this.state;
-    const { timePickerComponent: TimePicker, onChange, min, max, defaultMonth, calendarStyles, calendarContainerProps } = this.props;
+    const {
+      timePickerComponent: TimePicker,
+      onChange,
+      min,
+      max,
+      defaultMonth,
+      calendarStyles,
+      calendarContainerProps,
+    } = this.props;
 
     return (
       <div>
@@ -159,35 +168,33 @@ export default class DatePicker extends Component {
           max={max}
           selectedDay={momentValue}
           defaultMonth={defaultMonth}
-          onSelect={this.handleSelectDay.bind(this) }
-          onClickOutside={this.handleClickOutsideCalendar.bind(this) }
+          onSelect={this.handleSelectDay.bind(this)}
+          onClickOutside={this.handleClickOutsideCalendar.bind(this)}
           outsideClickIgnoreClass={outsideClickIgnoreClass}
           styles={calendarStyles}
           containerProps={calendarContainerProps}
         >
-          {
-            TimePicker ? (
-              <TimePicker
-                min={min}
-                max={max}
-                momentValue={momentValue}
-                setMomentValue={this.setMomentValue.bind(this) }
-              />
-            ) : null
-          }
+          {TimePicker ? (
+            <TimePicker
+              min={min}
+              max={max}
+              momentValue={momentValue}
+              setMomentValue={this.setMomentValue.bind(this)}
+            />
+          ) : null}
         </Calendar>
       </div>
     );
   }
 
   removeDate() {
-    const {onChange} = this.props;
+    const { onChange } = this.props;
     if (onChange) {
-      onChange('');
+      onChange("");
     }
     this.setState({
-      input: '',
-      inputValue: ''
+      input: "",
+      inputValue: "",
     });
   }
 
@@ -196,8 +203,8 @@ export default class DatePicker extends Component {
 
     return (
       <TetherComponent attachment="top center">
-        { this.renderInput() }
-        { isOpen ? this.renderCalendar() : null }
+        {this.renderInput()}
+        {isOpen ? this.renderCalendar() : null}
       </TetherComponent>
     );
   }
