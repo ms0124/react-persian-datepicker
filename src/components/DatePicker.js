@@ -159,8 +159,11 @@ export default class DatePicker extends Component {
       defaultMonth,
       calendarStyles,
       calendarContainerProps,
+      disabledHours,
+      disabledMinutes,
     } = this.props;
 
+    console.log({disabledHours, disabledMinutes});
     return (
       <div>
         <Calendar
@@ -180,6 +183,8 @@ export default class DatePicker extends Component {
               max={max}
               momentValue={momentValue}
               setMomentValue={this.setMomentValue.bind(this)}
+              disabledHours={disabledHours}
+              disabledMinutes={disabledMinutes}
             />
           ) : null}
         </Calendar>
